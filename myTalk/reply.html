@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{
+            padding: 0;
+            /*margin:0;*/
+        }
+        body{
+            color: darkslateblue;
+        }
+        p{
+            font-family: 华文宋体;
+            font-size: 20px;
+            color: aqua;
+        }
+        input{
+            text-indent: 10px;
+            margin-top: 20px;
+            width: 300px;
+            height: 30px;
+            border-radius: 5px;
+            border: none;
+            font-size: 10px;
+            color: darkgreen;
+        }
+        #reply{
+            border: black 1px solid;
+            /*box-shadow: 5px 15px 200px slateblue ,-5px -5px 100px skyblue;*/
+        }
+        #reply::-webkit-scrollbar {
+
+            /*滚动条整体样式*/
+            width : 3px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        #reply::-webkit-scrollbar-thumb {
+
+            /*滚动条里面小方块*/
+            border-radius: 10px;
+            background-color: wheat;
+        }
+        textarea{
+            padding: 10px;
+            border-radius:5px;
+            background-color: white;
+            line-height:20px;
+            font-family: 幼圆;
+            font-size: 15px;
+            text-indent:5px;
+            letter-spacing:2px;
+            text-align: left;
+            width: 80%;height: 80px;
+            resize: none;
+        }
+        button{
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+            letter-spacing: 5px;
+            height: 30px;
+            width: 50px;
+            border: 10px;
+            margin-left: 10px;
+            background-color: burlywood;
+        }
+        #sendReply{
+            width: 13%;
+            font-size: 20px;
+            height: 100px;
+            position: relative;
+            bottom: 43px;
+        }
+        body,html{
+            height: 100%;
+        }
+        /*设置滚动条样式*/
+        body::-webkit-scrollbar {
+
+            /*滚动条整体样式*/
+            width : 3px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        body::-webkit-scrollbar-thumb {
+
+            /*滚动条里面小方块*/
+            border-radius: 10px;
+            background-color: steelblue;
+        }
+        #AvatarAndNickname div{
+            width: 70%;
+            height: 35px;
+            position: relative;
+            color: orangered;font-size: 17px;margin-left:65px;position: relative;bottom: 20px;
+        /*    left: 46px;*/
+            top: -55px;
+            line-height: 100%;
+            text-align: left;
+        }
+        #back{
+            font-size: 16px;
+            color: aqua;
+            font-family: 楷体;
+            margin-left: 5%;
+            cursor: pointer;
+        }
+        #topHr{
+            color: midnightblue;
+            box-shadow: midnightblue 1px 1px 10px 10px;
+        }
+        /*回复评论的样式*/
+        .replies img{
+            border-radius: 50%;float: left;margin-right: 10px;
+        }
+        .replies div{
+            color: orange; font-size: 13px;width:75%;margin-left: 45px;
+        }
+        .replies p{
+            color: #37e2b2;font-size: 17px;
+        }
+        .rBut{
+            cursor: pointer;
+        }
+        .rInput{
+            cursor: pointer;
+        }
+        .wrInput{
+            display: none;
+            margin-left:45px;
+        }
+        #send,#sendReply{
+            border: 5px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+</head>
+<body>
+<a id="back">返回</a>
+    <!--头像和昵称-->
+    <div style="width: 23%;height: 50px;margin-left:20%;margin-top: 1%" id="AvatarAndNickname">
+        <img th:src="@{/imgs/headPhoto.jpg}" width="50px" height="50px" style="border-radius: 50%">
+        <div>
+            <b th:text="${session.friend.getUsername()}" style="font-size: 18px"></b>
+            <p style="font-size: 15px;color: #37e2b2" th:text="${session.topic.getCreatetime()}"></p>
+        </div>
+    </div>
+<!--    日志框-->
+    <div style="margin-left: 25%;width: 50%;">
+        <p th:text="${session.topic.getTopic()}" style="padding: 5px;"></p>
+    </div>
+    <!--日志和留言-->
+    <div style="width: 50%;margin-left: 20%;margin-top:50px;">
+        <!--    回复框-->
+        <hr id="topHr">
+        <p style="color: orange;font-size: 15px;" id="friReply">评论|回复<span style="margin-left: 340px;color: coral" id="success">评论成功</span></p>
+        <div>
+            <input th:value="${session.topic.getTid()}" name="tid" type="hidden">
+            <input th:value="${session.user.getId()}" name="uid" type="hidden">
+            <textarea placeholder="说点什么吧..." name="reply" id="reply"></textarea><button id="sendReply">评论</button>
+        </div>
+        <br>
+    </div>
+
+
+<!--评论-->
+    <div id="bigBox" th:each="reply:${session.topic.getReplyList()}">
+    <div style="width: 50%;margin-left: 20%">
+        <img src="imgs/headPhoto.jpg" width="40px" height="40px" style="border-radius: 50%;float: left;margin-right: 10px">
+        <div style="color: orangered;font-size: 13px;width:75%;margin-left: 45px">
+            <input th:value="${reply.getRid()}" name="rid" type="hidden">
+            <input th:value="${reply.getUid()}" name="uid" type="hidden">
+            <input th:value="${session.user.getId()}" name="ruid" type="hidden">
+            <input th:value="${reply.getUsername()}" name="username" type="hidden">
+            <input th:value="${reply.getTid()}" name="tid" type="hidden">
+            <b th:text="${reply.getUsername()}" style="font-size:16px"></b>
+            <p style="color: #37e2b2;font-size: 17px" th:text="${reply.getReply()}"></p>
+            <p style="font-size: 10px;color: skyblue;" class="rInput">回复</p>
+        </div>
+
+<!--        回复评论的评论-->
+        <div th:if="${not #lists.isEmpty(reply.getrReplies())}" style="width: 100%;margin-left:45px;margin-top: 20px" class="replies" th:each="replies:${reply.getrReplies()}">
+            <img src="imgs/headPhoto.jpg" width="35px" height="35px">
+            <div>
+<!--                隐藏域设置uid，ruid，rid，通过点击事件获取其值，再发送给服务器-->
+                <input th:value="${reply.getRid()}" name="rid" type="hidden">
+<!--                回复了回复者，那么之前的回复者变为被回复者-->
+                <input th:value="${replies.getRuid()}" name="uid" type="hidden">
+                <input th:value="${session.user.getId()}" name="ruid" type="hidden">
+                <input th:value="${replies.getUsername1()}" name="username1" type="hidden">
+                <input th:value="${reply.getTid()}" name="tid" type="hidden">
+<!--                username1回复了username-->
+<!--                若回复用户==被回复用户，则不显示回复效果，只显示评论名称-->
+                <b th:if="${replies.getUsername()==replies.getUsername1()}">
+                    <b th:text="${replies.getUsername1()}"></b>
+                </b>
+<!--                若回复者和被回复者不为同一个人，则显示回复效果-->
+                <b th:unless="${replies.getUsername()==replies.getUsername1()}">
+                    <b th:text="${replies.getUsername1()}+'  '"></b>
+                    <b style="font-size: 20px">回复 <i class="fa fa-caret-right"></i></b>
+                    <b th:text="${replies.getUsername()}"></b>
+                </b>
+<!--                显示回复的评论-->
+                <p th:text="'  '+${replies.getrReply()}"></p>
+                <p style="font-size: 10px;color: skyblue;" class="rInput">回复</p>
+            </div>
+        </div>
+        <div class="wrInput"><input placeholder=""  id="texts" required/><button id="send">回复</button></div>
+    </div>
+    <br>
+    <br>
+        <hr style="border-color:#bbbbbb;margin-left: 22%;width: 36%">
+        <br>
+        <br>
+   </div>
+<span style="margin-left: 35%;width: 10%;font-size: 13px;color: #1dc797;font-family: 幼园">已经滑到底啦 ~ </span>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</html>
+<script type="text/javascript">
+    $("#success").hide();
+    var send;
+    let wrInput;
+    var texts;
+    var reply=$("#reply");
+    $("#reply").focus(function () {
+        reply.css("outline","none")
+    })
+    function myOninput() {
+    }
+    $("#back").click(function () {
+        history.go(-1);
+    })
+
+
+
+    //回复的点击事件
+    $(".rInput").click(function () {
+        // 如果回复框已经输入了值，再次点击回复时，回复框被清空
+        if (texts!=undefined) {
+            texts.val("");
+        }
+        // var arr=[1,2,3,4,5,6];
+        // 若回复按钮”已经绑定“单击事件(即点击回复按钮后未提交，再次点击提交按钮，需要解除上次绑定的单击事件）
+        if (send!=undefined){
+            send.unbind("click");
+        }
+        // 若回复框已存在，隐藏已经存在的回复框
+        if (wrInput!=undefined){
+            wrInput.hide();
+        }
+        //获取id为replies第一个div下的前三个input输入框的value值
+        //再获取回复框中·rInput的值
+        //通过当前点击对象找到其父元素div，再找到3个隐藏域input
+        let rid=$(this).parent().find("input:eq(0)")
+        let uid=$(this).parent().find("input:eq(1)")
+        let ruid=$(this).parent().find("input:eq(2)")
+        let username=$(this).parent().find("input:eq(3)")
+        let tid=$(this).parent().find("input:eq(4)")
+        //显示当前点击对象下对应的回复框
+        wrInput=$(this).parent().parent().parent().find(".wrInput:last");
+        wrInput.show();
+        // 回复框设置背景默认字
+        texts=$(wrInput).find("#texts");
+        texts.attr("placeholder","回复@"+username.val());
+        texts.focus();
+        //找到回复按钮
+        send= $(this).parent().parent().parent().find("#send:visible");
+        //给回复按钮绑定一个单击事件,发送Ajax请求
+        $(send).click(function () {
+            // alert(ruid.val())
+            // alert(uid.val())
+            // alert(texts.val())
+            if (texts.val()==""){
+                // alert("您还未发表评论")
+                texts.attr("placeholder","您还没有评论哦");
+                setTimeout(function () {
+                    texts.attr("placeholder","回复@"+username.val());
+                },700)
+            }else {
+                $.get({
+                    url: "/demo2/myTalk.do?operate=writeReplies",
+                    data: {
+                        "rid": rid.val(),
+                        "uid": uid.val(),
+                        "ruid": ruid.val(),
+                        "texts": texts.val(),
+                        "tid": tid.val()
+                    },
+                    success: function (data) {
+                        // alert("回复成功");
+                        wrInput.hide();
+                        window.location.reload();
+                    },
+                    error: function () {
+                        wrInput.hide();
+                    }
+                })
+
+            }
+        })
+
+    })
+
+
+
+
+
+    //针对日志评论的Ajax
+    $("#sendReply").click(function () {
+        // 获取日志id和登录用户id
+        let tid = $(this).parent().find("input:eq(0)");
+        let uid=$(this).parent().find("input:eq(1)");
+        //获取评论信息
+        let reply = $("#reply");
+        if (reply.val()==""){
+            // alert("您还未发表评论")
+            reply.attr("placeholder","您还没有评论哦");
+            setTimeout(function () {
+                reply.attr("placeholder","说点什么吧");
+            },1000)
+        }else {
+            $.get({
+                url: "/demo2/myTalk.do?operate=writeReply",
+                data: {
+                    "tid": tid.val(),
+                    "uid": uid.val(),
+                    "reply": reply.val()
+                },
+                success: function (data) {
+                    reply.val("");
+                    $("#success").show();
+                    setTimeout(function () {
+                        $("#success").hide();
+                        window.location.reload();
+                    },1000);
+                },
+                error: function () {
+                    let success = $("#success");
+                    success.text("评论失败");
+                    $("#success").show();
+                    setTimeout(function () {
+                        $("#success").hide();
+                        success.text("评论成功");
+                    },1000);
+
+                }
+            })
+
+        }
+    })
+
+</script>

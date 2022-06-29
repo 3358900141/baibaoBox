@@ -1,0 +1,31 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .href{
+            display: flex;
+            z-index: 1;
+            position: absolute;
+            text-align: right;font-family: 方正舒体;font-size: 20px;
+            text-decoration: none;
+            left: 65%;
+            top: 70%;
+            color: deepskyblue;
+        }
+    </style>
+</head>
+<body style="overflow: hidden">
+<!--登录用户id和friend的id不相同,说明当前访问的是好友世界-->
+<div style="width: 100% ;height:200px;" th:if="${session.friend.getId()!=session.user.getId()}">
+<p style="text-align: center;font-size: 30px;color: aquamarine">欢迎来到
+    <a href="#" style="text-decoration: none;color: #1dc797" th:text="${session.friend.getUsername()}"></a>
+    的世界!</p>
+<a th:href="@{/myTalk.do(operate=MyHome)}" class="href" target="_top">返回我的世界</a>
+</div>
+<!--<p style="text-align: right"><a th:href="${#calendars}">返回我的世界</a></p>-->
+<div style="width: 100% ;height:200px;" th:unless="${session.friend.getId()!=session.user.getId()}">
+    <p style="text-align: center;font-size: 30px;color: aquamarine">欢迎回到我的世界</p>
+</div>
+</body>
+</html>

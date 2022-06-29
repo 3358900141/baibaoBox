@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .testDiv{
+            border: black 1px solid;
+            border-radius:20px;
+            /*box-shadow: 5px 15px 200px slateblue ,-5px -5px 100px skyblue;*/
+        }
+        .testDiv::-webkit-scrollbar {
+
+            /*滚动条整体样式*/
+            width : 3px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        .testDiv::-webkit-scrollbar-thumb {
+
+            /*滚动条里面小方块*/
+            border-radius: 10px;
+            background-color: blueviolet;
+        }
+        textarea{
+            background-color: skyblue;
+            line-height:30px;
+            font-family: 幼圆;
+            font-size: 20px;
+            text-indent: 20px;
+            letter-spacing:6px;
+            text-align: left;
+            color: blue;
+            width: 46%;margin-left: 30%;position: relative;height: 200px;
+            resize: none;
+        }
+        button{
+            margin-top: 10px;
+            width: 30%;
+            height: 36px;
+            /*position: relative;*/
+            border: none;
+            background-color: slateblue;
+            margin-left: 40%;
+            font-size: 20px;
+            letter-spacing: 30px;
+        }
+        .yesImg{
+
+            width: 15%;
+            height:17%;
+            /*background-color: #1dc797;*/
+            margin-left: 46%;
+            display: none;
+        }
+        .href{
+            text-decoration: none;
+            color: orangered;
+        }
+        #goWrite{
+            cursor:pointer;
+            color: #37e2b2;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+</head>
+<body>
+<br>
+<a href="/demo2/myTalk.do?operate=MyHome" class="href" target="_top" style="margin-left: 5%;font-family: 幼圆">返回</a>
+<br>
+<br>
+<!--文本域-->
+<textarea class="testDiv" cols="25" rows="20"  id="topic" placeholder="说点什么吧..." autofocus>
+</textarea>
+<!--发布成功的图片-->
+<div class="yesImg">
+    <i class="fa fa-check" style="font-size: 120px;color: limegreen;margin-left:2%"></i>
+    <p style="text-align: center;color: aqua;font-family: 幼圆">
+<!--        退出发布日志页面-->
+    </p>
+<!--    继续发布日志-->
+    <p style="text-align: center;color: orange;font-family: 幼圆" id="goWrite">再发一条?</p>
+</div>
+
+    <button type="submit" id="butSub">发表<span id="success"></span></button>
+
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $("#butSub").click(function () {
+        // let elementById = document.getElementById("butSub");
+        // $("#butSub").css("color","green","background-color","white")
+        // $("#butSub").css("font-size","36px")
+        // $("#butSub").attr("disabled",true)
+        // alert($("#topic").val()=="")
+        if ($("#topic").val()!="") {
+            $.get({
+                url: "/demo2/myTalk.do?operate=writeTopic",
+                data: {"topic": $("#topic").val()},
+                success: function (data) {
+                    $("#butSub").text(data);
+                    a("white","green","22px");
+                    $("#butSub").attr("disabled", true);
+                    $("#topic").val("");
+                    $("#topic").hide();
+                    $(".yesImg").show();
+                },
+                error: function () {
+                    alert("发布失败");
+                }
+            })
+        }else {
+            alert("请输入")
+        }
+    })
+    // 点击再发一条
+    $("#goWrite").click(function () {
+        $(".yesImg").hide();
+        $("#topic").show();
+        $("#butSub").removeAttr("disabled");
+        $("#butSub").text("发布");
+        a("","","");
+    })
+
+    function a(a,b,c) {
+        $("#butSub").css("background-color",a )
+        $("#butSub").css("color", b)
+        $("#butSub").css("font-size", c)
+    }
+</script>
+</html>

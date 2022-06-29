@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            color: darkslateblue;
+        }
+        p{
+            font-family: 华文宋体;
+            font-size: 20px;
+            color: #37e2b2;
+        }
+        input{
+            border-radius: 5px;
+            border: none;
+            font-size: 10px;
+            color: darkgreen;
+        }
+        /*设置滚动条样式*/
+        body::-webkit-scrollbar {
+
+            /*滚动条整体样式*/
+            width : 3px;  /*高宽分别对应横竖滚动条的尺寸*/
+            height: 1px;
+        }
+        body::-webkit-scrollbar-thumb {
+
+            /*滚动条里面小方块*/
+            border-radius: 10px;
+            box-shadow:0px 0px 7px 3px;
+            background-color: steelblue;
+        }
+        .testDiv{
+            border: black 1px solid;
+            border-radius:26px;
+            box-shadow: 5px 15px 20px skyblue ,-5px -5px 10px skyblue;
+        }
+        #AvatarAndNickname div{
+            width: 70%;
+            height: 35px;
+            position: relative;
+            left: 46px;
+            top: -35px;
+            line-height: 100%;
+            text-align: left;
+        }
+        .sleepImg{
+            margin:10% 30%;
+            width: 500px;
+            height: 200px;
+            /*background-color: #37e2b2;*/
+        }
+        .sleepImg p{
+            font-size: 30px;
+            font-family: 幼圆;
+        }
+        #writeTopic{
+            position: absolute;
+            left: 85%;
+            top: 100px;
+            background-color: blanchedalmond;
+            width: 10%;
+            height: 10%;
+            border-radius: 100%;
+            /*margin: 20px 45%;*/
+        }
+        #writeTopic p a{
+            text-decoration: none;
+            font-size: 20px;
+            font-family: 幼圆;
+            color: orange;
+        }
+        /*.writeTopic p{*/
+        /*    border-radius: 10px;*/
+        /*    border: none;*/
+        /*    background-color: slateblue;*/
+        /*    box-shadow: #1dc797 1px 1px 5px 5px;*/
+        /*}*/
+    </style>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+</head>
+<body>
+<div id="writeTopic" th:if="${session.friend.getId()==session.user.getId()}">
+    <p style="width: 100px;height: 35px;text-align: center"><a href="/demo2/myTalk.do?operate=page&object=object/writeTopic">写日志</a>
+        <i class="fa fa-commenting-o" style="font-size: 20px;color: orange"></i></p>
+</div>
+
+
+<div th:if="${#lists.isEmpty(session.friend.getTopicList())}" class="sleepImg">
+    <p style="line-height: 200px;">这家伙很懒,暂时没有留下什么东西~</p>
+</div>
+<!--如果日志列表不为空，则显示日志信息-->
+<div class="bigBox" style="height: 300px" th:unless="${#lists.isEmpty(session.friend.getTopicList())}" th:each="Topic:${session.friend.getTopicList()}">
+
+        <div style="width: 60%;margin-left: 20%;position: relative" class="testDiv">
+            <!--头像和昵称-->
+            <div style="width: 20%;height: 70px;margin-left:5%;margin-top: 5%;" id="AvatarAndNickname">
+                <img th:src="@{/imgs/headPhoto.jpg}" width="37px" height="37px" style="border-radius: 50%">
+                <div style="color: orangered;font-size: 17px;line-height:6px;">
+                    <a th:text="${session.friend.getUsername()}"></a>
+                    <p style="font-size: 15px;color: purple" th:text="${Topic.createtime}"></p>
+                </div>
+            </div>
+
+
+            <!--日志和留言-->
+            <div style="margin-left: 4%;width: 93%">
+                <p th:text="${Topic.topic}"></p>
+                <i class="fa fa-thumbs-o-up" style="font-size: 25px;color: red;position: relative;left: 80%"></i>
+                <i class="fa fa-share-square-o" style="font-size: 25px;position: relative;left: 85%"></i>
+<!--                <i class="fa fa-thumbs-up" style="font-size: 25px;color: red"></i>-->
+                <p><a th:href="@{/myTalk.do(operate=lookReply,tid=${Topic.getTid()})}" target="_self" style="color: lavender;font-size: 16px;text-decoration: none">查看评论回复</a></p>
+            </div>
+        </div>
+    <br>
+    <br>
+    <br>
+</div>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        let dv=document.getElementById("writeTopic")
+        // alert(dv1.offsetLeft)
+        window.onscroll=divMove;
+        //div随滚动条滚动
+
+        function divMove(){
+            var arr=getScroll();
+            // alert(arr)
+            dv.style.top=100+arr[0]+"px";
+            // alert(arr[0])
+            // alert(dv.style.top)
+        }
+
+        function getScroll() {
+            var arry=new Array();
+            if (document.documentElement&&document.documentElement.scrollTop){
+                arry[0]=document.documentElement.scrollTop;
+                arry[1]=document.documentElement.scrollLeft;
+                arry[2]=document.documentElement.scrollWidth;
+                arry[3]=document.documentElement.scrollHeight;
+            }else if (document.body){
+                arry[0]=document.body.scrollTop;
+                arry[1]=document.body.scrollLeft;
+                arry[2]=document.body.scrollWidth;
+                arry[3]=document.body.scrollHeight;
+            }
+            return arry;
+        }
+    })
+
+
+</script>
+</html>

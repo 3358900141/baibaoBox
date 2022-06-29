@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+<style>
+    ul li{
+        font-size: 20px;
+        font-weight: bolder;
+        font-family: 幼圆;
+        color: #37e2b2;
+        list-style: none;
+        /*height: 30px;*/
+
+    }
+    div span{
+
+    }
+    span{
+        color: blueviolet;
+        /*设置元素不可选择*/
+        user-select: none;
+        /*取消元素不可选中*/
+        user-select: text;
+
+    }
+    /*.friendList{*/
+    /*    display: none;*/
+    /*}*/
+    /*.showFriendList:hover .friendList{*/
+    /*    display: block;*/
+    /*}*/
+    /*ul li ul{*/
+    /*    height: 35px;*/
+    /*}*/
+    ul li ul li a{
+        font-size: 16px;
+        color: #37e2b2;
+        text-decoration: none;
+        letter-spacing: 5px;
+
+    }
+    button{
+        /*鼠标悬浮上样式*/
+        cursor: pointer;
+        background:none;
+        border: none;
+        color: blueviolet;
+        font-size: 20px;
+    }
+    #names{
+        position: relative;
+        left: 66px;
+        top: -62px;
+    }
+    /*设置滚动条样式*/
+    body::-webkit-scrollbar {
+
+        /*滚动条整体样式*/
+        width : 3px;  /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+    body::-webkit-scrollbar-thumb {
+
+        /*滚动条里面小方块*/
+        border-radius: 10px;
+        background-color: blueviolet;
+    }
+    .set1{
+        /*background-color: #FB7299;*/
+        display: none;
+        z-index: 1;
+        width: 100px;
+        /*height: 200px;*/
+        line-height: 35px;
+        position: absolute;
+        bottom: 20px;
+    }
+
+    .set:hover .set1{
+        display: block;
+    }
+
+    /*.set{*/
+    /*    color: #37e2b2;*/
+    /*    font-size: 20px;*/
+    /*    list-style: none;*/
+    /*    font-family: 幼圆;*/
+    /*}*/
+</style>
+</head>
+<body>
+<div style="width: 100%;height: 60px;">
+    <img th:src="@{/imgs/headPhoto.jpg}" width="60px" height="60px" style="border-radius: 50%">
+    <div id="names" style="color: orangered;font-size: 30px;line-height:60px;font-family: 方正姚体" th:text="${session.user.getUsername()}"></div>
+</div>
+<br/>
+<br/>
+<ul class="first">
+    <li><span id="abc">&bigtriangledown;</span><button class="showFriendList">&nbsp;好友列表</button>
+        <br>&nbsp;
+        <ul class="friendList" th:each="friends:${session.user.getFriendList()}">
+<!--            获取到单个好友对象-->
+            <li><a th:href="@{/myTalk.do(operate=topicList,id=${friends.id})}" target="_top" th:text="${friends.username}"></a></li>
+        </ul>
+    </li>
+</ul>
+
+
+<ul style="position: absolute;bottom: 50px;">
+    <li class="set"><i class="fa fa-cog" style="font-size: 23px;color: #37e2b2"></i>设置
+        <ul class="set1">
+            <li>添加好友</li>
+            <li>退出登录</li>
+        </ul>
+    </li>
+</ul>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(".showFriendList").click(function () {
+        if($(".friendList").is(":visible")){
+            $("#abc")[0].innerHTML="&gtcc;";
+        }else {
+            $("#abc")[0].innerHTML="&bigtriangledown;";
+        }
+        $(".friendList").toggle(100);
+    })
+
+    // $(".set").click(function () {
+    //     alert("123")
+    //     $(".set1").show();
+    // })
+</script>
+</html>
